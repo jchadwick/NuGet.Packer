@@ -16,6 +16,16 @@
     <!-- Specify a value (e.g. "alpha", "beta", "rc", etc.) to create a pre-release package -->
     <PreReleaseVersion Condition=" '$(PreReleaseVersion)' == ''"></PreReleaseVersion>
 
+    <!-- Enables publishing a NuGet package -->
+    <PublishNuGetPackage Condition=" '$(PublishNuGetPackage)' == '' ">false</PublishNuGetPackage>
+
+    <!-- The API Key to use when publishing NuGet packages -->
+    <NuGetApiKey Condition=" '$(NuGetApiKey)' == '' "></NuGetApiKey>
+    
+    <!-- The NuGet package repository that packages will be published to (defaults to nuget.org) -->
+    <NuGetPublishSource Condition=" '$(NuGetPublishSource)' == '' "></NuGetPublishSource>
+
   </PropertyGroup>
+
 
 </Project>

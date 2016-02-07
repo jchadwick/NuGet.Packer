@@ -1,7 +1,8 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <!-- Packing Settings -->
   <PropertyGroup>
-    <!-- Property that enables building a package from a project -->
+    <!-- Enables building a NuGet package from a project -->
     <BuildNuGetPackage Condition=" '$(BuildNuGetPackage)' == '' ">false</BuildNuGetPackage>
 
     <!-- Get Patch Version -->
@@ -17,11 +18,25 @@
     <PackageVersion Condition=" '$(PreReleaseVersion)' != ''">$(PackageVersion)-$(PreReleaseVersion)</PackageVersion>
 
     <!-- Determines whether a symbols package (.symbols.nupkg) is produced -->
-    <BuildSymbolsPackage Condition=" '$(PreReleaseVersion)' != ''">true</BuildSymbolsPackage>
-
+    <BuildSymbolsPackage Condition=" '$(BuildSymbolsPackage)' != ''">true</BuildSymbolsPackage>
+    
     <!-- Use [ProjectName].nuspec as NuSpecFile if it exists -->
     <DefaultNuSpecFile>$(ProjectDir)$(ProjectName).nuspec</DefaultNuSpecFile>
     <NuSpecFile Condition=" '$(NuSpecFile)' == '' And Exists('$(DefaultNuSpecFile)')">$(DefaultNuSpecFile)</NuSpecFile>
+
+  </PropertyGroup>
+
+  <!-- Publishing Settings -->
+  <PropertyGroup>
+
+    <!-- Enables publishing a NuGet package -->
+    <PublishNuGetPackage Condition=" '$(PublishNuGetPackage)' == '' ">false</PublishNuGetPackage>
+    
+    <!-- The API Key to use when publishing NuGet packages -->
+    <NuGetApiKey Condition=" '$(NuGetApiKey)' == '' "></NuGetApiKey>
+    
+    <!-- The NuGet package repository that packages will be published to -->
+    <NuGetPublishSource Condition=" '$(NuGetPublishSource)' == '' "></NuGetPublishSource>
 
   </PropertyGroup>
 
@@ -37,12 +52,19 @@
     <PackageOutputDir Condition="$(PackageOutputDir) == ''">$(OutDir.Trim('\\'))</PackageOutputDir>
     <PackageBasePath Condition="$(PackageBasePath) == ''">$(OutDir.Trim('\\'))</PackageBasePath>
 
+    <!-- Build Command -->
     <BuildSymbolsSwitch Condition=" '$(BuildSymbolsPackage)' == 'true' ">-symbols</BuildSymbolsSwitch>
     <NonInteractiveSwitch Condition=" '$(VisualStudioVersion)' != '' AND '$(OS)' == 'Windows_NT' ">-NonInteractive</NonInteractiveSwitch>
 
-    <!-- Commands -->
     <BuildCommand Condition=" $(NuSpecFile) == '' ">$(NuGetCommand) pack &quot;$(ProjectPath)&quot; -Properties &quot;Configuration=$(Configuration);Platform=$(Platform);TargetPath=$(OutDir)$(AssemblyName)$(TargetExt)&quot; $(NonInteractiveSwitch) -OutputDirectory &quot;$(PackageOutputDir)&quot; $(BuildSymbolsSwitch) -Version $(PackageVersion)</BuildCommand>
     <BuildCommand Condition=" $(NuSpecFile) != '' ">$(NuGetCommand) pack &quot;$(NuSpecFile)&quot; $(NonInteractiveSwitch) -BasePath &quot;$(PackageBasePath)&quot; -OutputDirectory &quot;$(PackageOutputDir)&quot; $(BuildSymbolsSwitch) -Version $(PackageVersion)</BuildCommand>
+
+    <!-- Publish Command -->
+    <PublishApiKeySwitch Condition=" '$(NuGetApiKey)' != '' ">-ApiKey "$(NuGetApiKey)"</PublishApiKeySwitch>
+    <PublishSourceSwitch Condition=" '$(NuGetPublishSource)' != '' ">-Source "$(NuGetPublishSource)"</PublishSourceSwitch>
+    <NuGetPackagePath Condition=" '$(NuGetPackagePath)' == '' ">$(PackageOutputDir)\$(ProjectName).$(PackageVersion).nupkg</NuGetPackagePath>
+
+    <PublishCommand>$(NuGetCommand) push $(PublishApiKeySwitch) $(PublishSourceSwitch) &quot;$(NuGetPackagePath)&quot;</PublishCommand>
 
     <!-- Make the build depend on restore packages -->
     <BuildDependsOn Condition="$(BuildNuGetPackage) == 'true'">
@@ -54,6 +76,9 @@
   <Target Name="BuildNuGetPackage" DependsOnTargets="CheckPrerequisites">
     <Exec Command="$(BuildCommand)" Condition=" '$(OS)' != 'Windows_NT' "/>
     <Exec Command="$(BuildCommand)" Condition=" '$(OS)' == 'Windows_NT' " LogStandardErrorAsError="true"/>
+    
+    <Exec Command="$(PublishCommand)" Condition=" '$(PublishNuGetPackage)' == 'true' And '$(OS)' != 'Windows_NT' "/>
+    <Exec Command="$(PublishCommand)" Condition=" '$(PublishNuGetPackage)' == 'true' And '$(OS)' == 'Windows_NT' " LogStandardErrorAsError="true"/>
   </Target>
 
   <Target Name="CheckPrerequisites">
