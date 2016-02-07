@@ -1,0 +1,63 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <!-- Property that enables building a package from a project -->
+    <BuildNuGetPackage Condition=" '$(BuildNuGetPackage)' == '' ">false</BuildNuGetPackage>
+
+    <!-- Get Patch Version -->
+    <!-- Use TFS BuildNumber if available -->
+    <PatchVersion Condition=" '$(PatchVersion)' == '' And '$(TF_BUILD_BUILDNUMBER)' != ''">$(TF_BUILD_BUILDNUMBER.Substring($([MSBuild]::Add($(TF_BUILD_BUILDDEFINITIONNAME.Length), 1))).Replace(".", ""))</PatchVersion>
+    <!-- Default to current UTC date and hour if we couldn't get it anywhere else -->
+    <PatchVersion Condition=" '$(PatchVersion)' == ''">$([System.DateTime]::UtcNow.ToString(`yyMMddHH`))</PatchVersion>
+
+    <!-- Construct the package version -->
+    <PackageVersion Condition=" '$(PackageVersion)' == ''">$(MajorVersion).$(MinorVersion).$(PatchVersion)</PackageVersion>
+
+    <!-- Append a PreReleaseVersion to the package version if it exists -->
+    <PackageVersion Condition=" '$(PreReleaseVersion)' != ''">$(PackageVersion)-$(PreReleaseVersion)</PackageVersion>
+
+    <!-- Determines whether a symbols package (.symbols.nupkg) is produced -->
+    <BuildSymbolsPackage Condition=" '$(PreReleaseVersion)' != ''">true</BuildSymbolsPackage>
+
+    <!-- Use [ProjectName].nuspec as NuSpecFile if it exists -->
+    <DefaultNuSpecFile>$(ProjectDir)$(ProjectName).nuspec</DefaultNuSpecFile>
+    <NuSpecFile Condition=" '$(NuSpecFile)' == '' And Exists('$(DefaultNuSpecFile)')">$(DefaultNuSpecFile)</NuSpecFile>
+
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\</SolutionDir>
+
+    <!-- NuGet command -->
+    <NuGetToolsPath>$(SolutionDir)packages\NuGet.CommandLine.3.3.0\tools</NuGetToolsPath>
+    <NuGetExePath Condition=" '$(NuGetExePath)' == '' ">$(NuGetToolsPath)\NuGet.exe</NuGetExePath>
+    <NuGetCommand Condition=" '$(OS)' == 'Windows_NT'">&quot;$(NuGetExePath)&quot;</NuGetCommand>
+    <NuGetCommand Condition=" '$(OS)' != 'Windows_NT' ">mono --runtime=v4.0.30319 &quot;$(NuGetExePath)&quot;</NuGetCommand>
+
+    <PackageOutputDir Condition="$(PackageOutputDir) == ''">$(OutDir.Trim('\\'))</PackageOutputDir>
+    <PackageBasePath Condition="$(PackageBasePath) == ''">$(OutDir.Trim('\\'))</PackageBasePath>
+
+    <BuildSymbolsSwitch Condition=" '$(BuildSymbolsPackage)' == 'true' ">-symbols</BuildSymbolsSwitch>
+    <NonInteractiveSwitch Condition=" '$(VisualStudioVersion)' != '' AND '$(OS)' == 'Windows_NT' ">-NonInteractive</NonInteractiveSwitch>
+
+    <!-- Commands -->
+    <BuildCommand Condition=" $(NuSpecFile) == '' ">$(NuGetCommand) pack &quot;$(ProjectPath)&quot; -Properties &quot;Configuration=$(Configuration);Platform=$(Platform);TargetPath=$(OutDir)$(AssemblyName)$(TargetExt)&quot; $(NonInteractiveSwitch) -OutputDirectory &quot;$(PackageOutputDir)&quot; $(BuildSymbolsSwitch) -Version $(PackageVersion)</BuildCommand>
+    <BuildCommand Condition=" $(NuSpecFile) != '' ">$(NuGetCommand) pack &quot;$(NuSpecFile)&quot; $(NonInteractiveSwitch) -BasePath &quot;$(PackageBasePath)&quot; -OutputDirectory &quot;$(PackageOutputDir)&quot; $(BuildSymbolsSwitch) -Version $(PackageVersion)</BuildCommand>
+
+    <!-- Make the build depend on restore packages -->
+    <BuildDependsOn Condition="$(BuildNuGetPackage) == 'true'">
+      $(BuildDependsOn);
+      BuildNuGetPackage;
+    </BuildDependsOn>
+  </PropertyGroup>
+
+  <Target Name="BuildNuGetPackage" DependsOnTargets="CheckPrerequisites">
+    <Exec Command="$(BuildCommand)" Condition=" '$(OS)' != 'Windows_NT' "/>
+    <Exec Command="$(BuildCommand)" Condition=" '$(OS)' == 'Windows_NT' " LogStandardErrorAsError="true"/>
+  </Target>
+
+  <Target Name="CheckPrerequisites">
+    <!-- Raise an error if we're unable to locate nuget.exe  -->
+    <Error Condition="'$(DownloadNuGetExe)' != 'true' AND !Exists('$(NuGetExePath)')" Text="Unable to locate '$(NuGetExePath)'"/>
+  </Target>
+</Project>

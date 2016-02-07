@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>NuGet.Packer</id>
+    <version>1.0.0</version>
+    <authors>Jess Chadwick</authors>
+    <owners>Jess Chadwick</owners>
+    <licenseUrl>https://raw.githubusercontent.com/jchadwick/NuGetPacker/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/jchadwick/NuGetPacker</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Makes it incredibly easy to generate NuGet packages from any .NET solution, including projects with .nuspec files!</description>
+    <copyright>Copyright 2016</copyright>
+    <tags>NuGet</tags>
+    <dependencies>
+        <dependency id="NuGet.CommandLine" version="[3.3.0]" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="NuGet.Packer.targets" target="build" />
+    <file src="NuGet.Packer.props" target="build" />
+  </files>
+</package>

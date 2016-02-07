@@ -1,0 +1,21 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Only build packages during Release builds -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
+
+    <!-- Build a package from a project -->
+    <BuildNuGetPackage Condition=" '$(BuildNuGetPackage)' == '' ">true</BuildNuGetPackage>
+
+    <!-- Determines whether a symbols package (.symbols.nupkg) is produced -->
+    <BuildSymbolsPackage Condition=" '$(BuildNuGetPackage)' == '' ">true</BuildSymbolsPackage>
+
+    <!-- Manually update for major and minor version updates -->
+    <MajorVersion Condition=" '$(MajorVersion)' == ''">1</MajorVersion>
+    <MinorVersion Condition=" '$(MinorVersion)' == ''">0</MinorVersion>
+
+    <!-- Specify a value (e.g. "alpha", "beta", "rc", etc.) to create a pre-release package -->
+    <PreReleaseVersion Condition=" '$(PreReleaseVersion)' == ''"></PreReleaseVersion>
+
+  </PropertyGroup>
+
+</Project>
