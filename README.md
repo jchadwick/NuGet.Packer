@@ -82,10 +82,12 @@ Here is the full list of options that NuGet Packer supports (see the [NuGet.Pack
 | BuildSymbolsPackage| true          | Build the corresponding symbols package during compilation                                     |
 | MajorVersion       | 1             | Package version (major)              |
 | MinorVersion       | 0             | Package version (minor)              |
-| PreReleaseVersion  | N/A           | Specify a value (e.g. "alpha", "beta", "rc", etc.) to create a pre-release package.  If empty, a regular (non-pre-release) package will be created.  |
-| PublishNuGetPackage| false         | Enables publishing a NuGet package   |
 | NuGetApiKey        | true          | NuGet API Key (or set via `nuget.exe setApiKey`) |
 | NuGetPublishSource | true          | The NuGet package repository that packages will be published to (defaults to nuget.org)                                     |
+| PackageVersion     | [MajorVersion].[MinorVersion].[PatchVersion] | The full version number.  Override this property if you are managing version numbers outside of this system. |
+| PatchVersion       | TFS Build Number or Current UTC time (yyMMddHH) | The patch (third part) of the version number |
+| PreReleaseVersion  | N/A           | Specify a value (e.g. "alpha", "beta", "rc", etc.) to create a pre-release package.  If empty, a regular (non-pre-release) package will be created.  |
+| PublishNuGetPackage| false         | Enables publishing a NuGet package   |
 
 
 ### Setting MSBuild Property Values
@@ -105,6 +107,6 @@ Generally speaking, you can set an MSBuild property in one of two ways:
 2. Pass it as a command line parameter:
 `msbuild.exe MyPackage.sln /p:PublishNuGetPackage=true /p:NuGetPublishSource="http://nuget.mycompany.org" /p:NuGetApiKey=12312312312`
 
-    *NOTE:* If building your solution with TFS's build system, 
+    **NOTE:** If building your solution with TFS's build system, 
     you can pass these parameters in the `MSBuild Arguments` property, like this:
     `/p:PublishNuGetPackage=true /p:NuGetPublishSource="http://nuget.mycompany.org" /p:NuGetApiKey=12312312312`
