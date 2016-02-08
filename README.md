@@ -60,28 +60,51 @@ NuGet Packer also supports publishing your package right from your build.  Remem
 The most important thing that you'll need to do in order to publish your package is to set your API key.  You have two options:
 
 1. Set the value in your local user configuration (as it shows you in the documentation)
-2. Pass the value in the `NuGetApiKey` MSBuild property
+2. Set the MSBuild property `NuGetApiKey`
 
 I prefer option #2, especially since you should only be pushing NuGet packages from a build server and not your local machine!  See the next section for an example.
 
 ### Setting your target package source _(optional)_
 
-By default, NuGet Packer will upload your package to the public NuGet repository ([nuget.org](http://nuget.org).  If you'd like to publish to another repository, you'll need to set the `NuGetPublishSource` MSBuild property. (See below for an example)
+By default, NuGet Packer will upload your package to the public NuGet repository ([nuget.org](http://nuget.org)).  If you'd like to publish to another repository, you'll need to set the MSBuild property `NuGetPublishSource`.
 
 ### Enable Publishing with NuGet Packer
-Even though NuGet Packer generates a NuGet package by default, automatic publishing is not enabled by default.  In order to enable automatic publishing, you'll nee to set the `PublishNuGetPackage` MSBuild property to `true`.
+Even though NuGet Packer generates a NuGet package by default, automatic publishing is not enabled by default.  In order to enable automatic publishing, you'll nee to set the MSBuild property `PublishNuGetPackage` to `true`.
 
-You can set this property in one of two ways:
+
+## NuGet Packer Options
+
+Here is the full list of options that NuGet Packer supports (see the [NuGet.Packer.props](NuGet.Packer.props) file):
+
+| MSBuild Property   | Default       | Description                          |
+|--------------------|:-------------:|--------------------------------------|
+| BuildNuGetPackage  | true          | Build the .nupkg during compilation  |
+| BuildSymbolsPackage| true          | Build the corresponding symbols package during compilation                                     |
+| MajorVersion       | 1             | Package version (major)              |
+| MinorVersion       | 0             | Package version (minor)              |
+| PreReleaseVersion  | N/A           | Specify a value (e.g. "alpha", "beta", "rc", etc.) to create a pre-release package.  If empty, a regular (non-pre-release) package will be created.  |
+| PublishNuGetPackage| false         | Enables publishing a NuGet package   |
+| NuGetApiKey        | true          | NuGet API Key (or set via `nuget.exe setApiKey`) |
+| NuGetPublishSource | true          | The NuGet package repository that packages will be published to (defaults to nuget.org)                                     |
+
+
+### Setting MSBuild Property Values
+NuGet Packer is an MSBuild-based solution which means that all of these settings are MSBuild properties.
+Generally speaking, you can set an MSBuild property in one of two ways:
 
 1. Add it to the `.csproj` or `.vbproj` file:
- ```
+
+```
 <PropertyGroup>
  <PublishNuGetPackage>true</PublishNuGetPackage>
+ <NuGetApiKey>12312312312</NuGetApiKey>
+ <NuGetPublishSource>http://nuget.mycompany.org</NuGetPublishSource>
 </PropertyGroup>
 ```
-2. Pass it as an MSBuild property
 
+2. Pass it as a command line parameter:
+`msbuild.exe MyPackage.sln /p:PublishNuGetPackage=true /p:NuGetPublishSource="http://nuget.mycompany.org" /p:NuGetApiKey=12312312312`
 
-## Example MSBuild Command Line
-
-`msbuild MyPackage.sln /p:PublishNuGetPackage=true /p:NuGetPublishSource="http://nuget.mycompany.org" /p:NuGetApiKey=12312312312`
+    *NOTE:* If building your solution with TFS's build system, 
+    you can pass these parameters in the `MSBuild Arguments` property, like this:
+    `/p:PublishNuGetPackage=true /p:NuGetPublishSource="http://nuget.mycompany.org" /p:NuGetApiKey=12312312312`
