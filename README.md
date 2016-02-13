@@ -4,7 +4,7 @@ NuGet Packer helps you turn your .NET (.csproj/.vbproj) projects into NuGet pack
 ## Basic Usage
 Using NuGet Packer is as simple as installing a NuGet package and building your project:
 
-1. Install the NuGet package `NuGet.Packer`
+1. Install the NuGet package [NuGet.Packer](https://www.nuget.org/packages/NuGet.Packer/)
   * Using [the NuGet package management GUI](http://docs.nuget.org/consume/package-manager-dialog), or
   * Typing the following command in the Package Management Console:
   
