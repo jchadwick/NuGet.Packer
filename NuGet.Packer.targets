@@ -18,7 +18,7 @@
     <PackageVersion Condition=" '$(PreReleaseVersion)' != ''">$(PackageVersion)-$(PreReleaseVersion)</PackageVersion>
 
     <!-- Determines whether a symbols package (.symbols.nupkg) is produced -->
-    <BuildSymbolsPackage Condition=" '$(BuildSymbolsPackage)' != ''">true</BuildSymbolsPackage>
+    <BuildSymbolsPackage Condition=" '$(BuildSymbolsPackage)' == ''">true</BuildSymbolsPackage>
     
     <!-- Use [ProjectName].nuspec as NuSpecFile if it exists -->
     <DefaultNuSpecFile>$(ProjectDir)$(ProjectName).nuspec</DefaultNuSpecFile>
