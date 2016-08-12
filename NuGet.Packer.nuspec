@@ -11,6 +11,7 @@
     <description>Makes it incredibly easy to generate NuGet packages from any .NET solution, including projects with .nuspec files!</description>
     <copyright>Copyright 2016</copyright>
     <tags>NuGet</tags>
+    <developmentDependency>true</developmentDependency>
     <dependencies>
         <dependency id="NuGet.CommandLine" version="[3.3.0]" />
     </dependencies>
