@@ -17,7 +17,7 @@ Using NuGet Packer is as simple as installing a NuGet package and building your 
 That's it!  Your NuGet package will be in your `/bin` folder, right next to your project's output assembly (.dll).  It will be named `[Assembly Name].[Version].nupkg`
 
 ## Customizing Your NuGet Package
-NuGet Packer is just a thin wrapper around the NuGet executable, so all of the [standard documentation around creating NuGet packages](http://docs.nuget.org/Create/Creating-and-Publishing-a-Package] still applies, especially the part about [defining your project's metadata](http://docs.nuget.org/Create/Creating-and-Publishing-a-Package#user-content-from-a-project) so that NuGet can use it in the package it generates.
+NuGet Packer is just a thin wrapper around the NuGet executable, so all of the [standard documentation around creating NuGet packages](http://docs.nuget.org/Create/Creating-and-Publishing-a-Package) still applies, especially the part about [defining your project's metadata](http://docs.nuget.org/Create/Creating-and-Publishing-a-Package#user-content-from-a-project) so that NuGet can use it in the package it generates.
 
 In other words, if you update the attributes in your project's `AssemblyInfo.cs` file, NuGet will use those to create your package.  So you want to make it look something like this:
 
