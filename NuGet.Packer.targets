@@ -8,8 +8,8 @@
     <!-- Get Patch Version -->
     <!-- Use TFS BuildNumber if available -->
     <PatchVersion Condition=" '$(PatchVersion)' == '' And '$(TF_BUILD_BUILDNUMBER)' != ''">$(TF_BUILD_BUILDNUMBER.Substring($([MSBuild]::Add($(TF_BUILD_BUILDDEFINITIONNAME.Length), 1))).Replace(".", ""))</PatchVersion>
-    <!-- Default to current UTC date and hour if we couldn't get it anywhere else -->
-    <PatchVersion Condition=" '$(PatchVersion)' == ''">$([System.DateTime]::UtcNow.ToString(`yyMMddHHmmss`))</PatchVersion>
+    <!-- Default to current UTC date, hour, minute if we couldn't get it anywhere else -->
+    <PatchVersion Condition=" '$(PatchVersion)' == ''">$([System.DateTime]::UtcNow.ToString(`yyMMddHHmm`))</PatchVersion>
 
     <!-- Construct the package version -->
     <PackageVersion Condition=" '$(PackageVersion)' == ''">$(MajorVersion).$(MinorVersion).$(PatchVersion)</PackageVersion>
