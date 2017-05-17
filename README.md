@@ -42,7 +42,7 @@ The easiest way to do this is to just into the command line, go to your project'
 
 If that doesn't work, you can use the version of NuGet that NuGet Packer installed, in which case it'd be:
 
-  `..\packages\NuGet.CommandLine.3.3.0\tools\nuget.exe spec`
+  `..\packages\NuGet.CommandLine.3.5.0\tools\nuget.exe spec`
 
 This will generate the NuSpec file for you with the proper name in the proper location.
 
