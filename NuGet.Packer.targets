@@ -45,7 +45,7 @@
 
     <!-- NuGet command -->
     <NugetPackageRoot Condition=" '$(NugetPackageRoot)'=='' ">$(MSBuildThisFileDirectory)..\..\</NugetPackageRoot>
-    <NuGetToolsPath Condition=" '$(NuGetToolsPath)'=='' ">$(NugetPackageRoot)NuGet.CommandLine.3.5.0\tools</NuGetToolsPath>
+    <NuGetToolsPath Condition=" '$(NuGetToolsPath)'=='' ">$(NugetPackageRoot)NuGet.CommandLine.4.5.1\tools</NuGetToolsPath>
     <NuGetExePath Condition=" '$(NuGetExePath)' == '' ">$(NuGetToolsPath)\NuGet.exe</NuGetExePath>
     <NuGetCommand Condition=" '$(OS)' == 'Windows_NT'">&quot;$(NuGetExePath)&quot;</NuGetCommand>
     <NuGetCommand Condition=" '$(OS)' != 'Windows_NT' ">mono --runtime=v4.0.30319 &quot;$(NuGetExePath)&quot;</NuGetCommand>
