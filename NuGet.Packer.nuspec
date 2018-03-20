@@ -13,7 +13,7 @@
     <tags>NuGet</tags>
     <developmentDependency>true</developmentDependency>
     <dependencies>
-        <dependency id="NuGet.CommandLine" version="[3.5.0]" />
+        <dependency id="NuGet.CommandLine" version="[4.5.1]" />
     </dependencies>
   </metadata>
   <files>
